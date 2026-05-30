@@ -16,8 +16,6 @@ const int buzzerPin = 8;
 int main(void)
 {
     
-    init();
-
     DDRB |= (1 << PB2);   // PB2 output (D10)
     DDRB |= (1 << PB0);   // PB0 output (D8)
     DDRD |= (1 << PD7);   // PD7 output (D7)
