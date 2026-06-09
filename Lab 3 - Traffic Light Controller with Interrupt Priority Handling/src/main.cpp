@@ -25,7 +25,6 @@ int main(void) {
     uint16_t timer_counter = 0;
 
     while (1) {
-    
         if (emergency_flag) {
             current_state = STATE_EMERGENCY;
         } else if (pedestrian_flag && current_state != STATE_EMERGENCY) {
@@ -34,7 +33,6 @@ int main(void) {
             current_state = STATE_MAINTENANCE;
         }
 
-      
         switch (current_state) {
             
             case STATE_NORMAL:
@@ -49,20 +47,19 @@ int main(void) {
 
             case STATE_EMERGENCY:
                 clear_all_lights();
-                PORTB |= (1 << PB0);  
-                PORTD |= (1 << PD7); 
-            
+                PORTB |= (1 << PB0);
+                PORTD |= (1 << PD7);
+                
                 for (int i = 0; i < 100; i++) {
                     _delay_ms(100);
                 }
-      
+                
                 emergency_flag = 0;
                 timer_counter = 0;
                 current_state = STATE_NORMAL;
                 break;
 
             case STATE_PEDESTRIAN:
-            
                 PORTD |= (1 << PD6); 
                 for (int i = 0; i < 50; i++) {
                     _delay_ms(100);
@@ -70,14 +67,13 @@ int main(void) {
                 }
 
                 if (!emergency_flag) {
-               
                     clear_all_lights();
                     PORTD |= (1 << PD5);
-                    PORTB |= (1 << PB1); 
+                    PORTB |= (1 << PB1);
                     
                     for (int i = 0; i < 100; i++) {
                         _delay_ms(100);
-                        if (emergency_flag) break; 
+                        if (emergency_flag) break;
                     }
                 }
 
@@ -90,7 +86,7 @@ int main(void) {
                 clear_all_lights();
                 
                 while (maintenance_flag) {
-                    PORTD ^= (1 << PD6); 
+                    PORTD ^= (1 << PD6);
                     
                     for (int i = 0; i < 5; i++) {
                         _delay_ms(100);
@@ -111,8 +107,8 @@ int main(void) {
 }
 
 void init_hardware(void) {
-    DDRD |= (1 << PD5) | (1 << PD6) | (1 << PD7); 
-    DDRB |= (1 << PB0) | (1 << PB1);              
+    DDRD |= (1 << PD5) | (1 << PD6) | (1 << PD7);
+    DDRB |= (1 << PB0) | (1 << PB1);            
 
     DDRD &= ~((1 << PD2) | (1 << PD3) | (1 << PD4));
     
@@ -120,20 +116,20 @@ void init_hardware(void) {
 
     EICRA |= (1 << ISC01) | (1 << ISC11);
     EICRA &= ~((1 << ISC00) | (1 << ISC10));
-    EIMSK |= (1 << INT0) | (1 << INT1); 
+    EIMSK |= (1 << INT0) | (1 << INT1);
 
-    PCICR |= (1 << PCIE2);     
-    PCMSK2 |= (1 << PCINT20);  
+    PCICR |= (1 << PCIE2);
+    PCMSK2 |= (1 << PCINT20);
 }
 
 void set_lights_normal_flow(uint8_t cycle) {
     clear_all_lights();
     if (cycle == 0) {
         PORTD |= (1 << PD5);
-        PORTB |= (1 << PB1); 
+        PORTB |= (1 << PB1);
     } else {
-        PORTD |= (1 << PD7); 
-        PORTB |= (1 << PB0); 
+        PORTD |= (1 << PD7);
+        PORTB |= (1 << PB0);
     }
 }
 
